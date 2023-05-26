@@ -27,11 +27,11 @@ socket.onmessage = function(message){
 
   //如果为加载状态
   if(data.mode === "load"){
+    //更改网页标题
     const title = ref(data.web_name);
     document.title = title.value;
   }
 }
-
 </script>
 
 <template>
