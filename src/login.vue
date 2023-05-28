@@ -86,7 +86,7 @@ socket.onmessage = function(message){
             <el-tab-pane label="普通用户登录" name="first">
               <el-input v-model="name" placeholder="请输入账号ID/邮箱" clearable />
             </el-tab-pane>
-            <el-tab-pane label="机器人登录" name="second">Config</el-tab-pane>
+            <el-tab-pane label="机器人账号登录" name="second">Config</el-tab-pane>
           </el-tabs>
         </div>
       </div>
@@ -103,9 +103,9 @@ socket.onmessage = function(message){
   background-color: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: rgba(142, 142, 142, 0.19) 0px 6px 15px 0px;
-  -webkit-box-shadow: rgba(142, 142, 142, 0.19) 0px 6px 15px 0px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: rgba(142, 142, 142, 0.19) 0 6px 15px 0;
+  -webkit-box-shadow: rgba(142, 142, 142, 0.19) 0 6px 15px 0;
   border-radius: 12px;
   -webkit-border-radius: 12px;
 }
