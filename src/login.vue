@@ -7,6 +7,27 @@ import { useDark, useToggle } from '@vueuse/core'
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
+//卡片深色自适应
+function autoblack(id){
+  function adjustblack(id) {
+    // 检测浏览器是否开启深色模式
+    function isDarkMode() {
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+    // 设置背景色
+    if (isDarkMode()) {
+      // 浏览器开启了深色模式
+      var divElement1 = document.getElementById(id);
+      divElement1.style.backgroundColor = "#000";
+    } else {
+      // 浏览器未开启深色模式
+      var divElement2 = document.getElementById(id);
+      divElement2.style.backgroundColor = "#fff";
+    }
+  }
+  window.setInterval(function logname() {adjustblack(id)}, 1);
+}
+autoblack("main");
 
 //全自动高度自适应
 function autoheight(id){
@@ -31,6 +52,7 @@ const activeName = ref('first')
 
 //设置输入框
 let name = ref('')
+let password = ref('')
 
 // 获取当前页面的主机名和端口号
 const hostname = window.location.hostname;
@@ -85,7 +107,11 @@ socket.onmessage = function(message){
           <h1>{{ login_title }}</h1>
           <el-tabs v-model="activeName" style="width:60%">
             <el-tab-pane label="普通用户登录" name="first">
-              <el-input v-model="name" placeholder="请输入账号ID/邮箱" clearable />
+              <el-space direction="vertical" :size="10">
+                <el-input v-model="name" placeholder="请输入账号ID/邮箱" clearable />
+                <el-input v-model="password" type="password" placeholder="请输入账号密码" show-password />
+                <el-button type="success" plain>登录账号</el-button>
+              </el-space>
             </el-tab-pane>
             <el-tab-pane label="机器人账号登录" name="second">Config</el-tab-pane>
           </el-tabs>
@@ -101,10 +127,9 @@ socket.onmessage = function(message){
   margin-top: 8%;
 	width: 30%;
 
-  background-color: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: rgba(142, 142, 142, 0.19) 0 6px 15px 0;
   -webkit-box-shadow: rgba(142, 142, 142, 0.19) 0 6px 15px 0;
   border-radius: 12px;
