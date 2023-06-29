@@ -53,6 +53,8 @@ const activeName = ref('first')
 //设置输入框
 let name = ref('')
 let password = ref('')
+let email_input = ref('')
+let email_code = ref('')
 
 // 获取当前页面的主机名和端口号
 const hostname = window.location.hostname;
@@ -68,6 +70,18 @@ console.log("websocket连接成功！")
 socket.onclose = function(evt) {
   console.log("Websocket连接已经关闭！");
 };
+
+//登录注册状态设置
+let login_or_register = ref("login")
+function mode_login() {
+  login_or_register.value = 'login'
+}
+function mode_register() {
+  login_or_register.value = 'register'
+}
+
+//email默认值
+let email = ref('F')
 
 //定义收到服务器消息之后如何处理
 socket.onmessage = function(message){
@@ -87,6 +101,9 @@ socket.onmessage = function(message){
     const title = ref(data.web_name);
     document.title = '登录 - ' + title.value;
     login_title.value = '登录 - ' + title.value;
+
+    //设置email选项
+    email = ref(data.email);
   }
 }
 </script>
@@ -105,16 +122,25 @@ socket.onmessage = function(message){
       <div style="text-align: -webkit-center">
         <div class="main" id="main">
           <h1>{{ login_title }}</h1>
-          <el-tabs v-model="activeName" style="width:60%">
-            <el-tab-pane label="普通用户登录" name="first">
-              <el-space direction="vertical" :size="10">
-                <el-input v-model="name" placeholder="请输入账号ID/邮箱" clearable />
-                <el-input v-model="password" type="password" placeholder="请输入账号密码" show-password />
-                <el-button type="success" plain>登录账号</el-button>
-              </el-space>
-            </el-tab-pane>
-            <el-tab-pane label="机器人账号登录" name="second">Config</el-tab-pane>
-          </el-tabs>
+          <el-button-group>
+            <el-button type="primary" @click="mode_login()">登录</el-button>
+            <el-button type="success" @click="mode_register()">注册</el-button>
+          </el-button-group><br><br>
+          <div style="width:70%">
+            <el-col :span='100'>
+              <el-input v-model="name" style="margin-bottom: 10px;" placeholder="请输入你的用户名或邮箱" clearable />
+              <el-input v-model="password" style="margin-bottom: 10px;" placeholder="请输入你的密码" show-password/>
+
+              <el-input v-if="email === 'T' && login_or_register === 'register'" v-model="email_input" style="margin-bottom: 10px;" placeholder="请输入你的邮箱"  clearable/>
+              <div style="display: flex; align-items: center;">
+                <el-input v-if="email === 'T' && login_or_register === 'register'" v-model="email_code" style="margin-bottom: 10px;" placeholder="请输入邮箱验证码"  clearable/>
+                <el-button v-if="email === 'T' && login_or_register === 'register'" style="margin-left: 10px;">发送验证码</el-button>
+              </div>
+
+              <el-button v-if="login_or_register === 'login'" type="success"> 登录 </el-button>
+              <el-button v-if="login_or_register === 'register'" type="warning"> 注册 </el-button>
+            </el-col>
+          </div>
         </div>
       </div>
     </template>
