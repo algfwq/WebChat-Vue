@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted,reactive } from 'vue'
+import { ElNotification } from 'element-plus'
 
 //设置深色模式
 import { useDark, useToggle } from '@vueuse/core'
@@ -105,6 +106,29 @@ socket.onmessage = function(message){
     //设置email选项
     email = ref(data.email);
   }
+  //如果为验证码发送状态反馈
+  else if(data.mode === "code_message"){
+      if(data.message === '验证码发送成功！'){
+          ElNotification({
+            title: '验证码发送成功！',
+            message: data.message,
+            type: 'success',
+            position: 'bottom-right',
+          })}
+      else{
+          ElNotification({
+            title: '验证码发送失败！',
+            message: data.message,
+            type:'error',
+            position: 'bottom-right',
+          })
+      }
+  }
+}
+
+//发送验证码函数
+function send_code() {
+  socket.send(JSON.stringify({'mode':'send_code','email':email_input.value}))
 }
 </script>
 
@@ -134,7 +158,7 @@ socket.onmessage = function(message){
               <el-input v-if="email === 'T' && login_or_register === 'register'" v-model="email_input" style="margin-bottom: 10px;" placeholder="请输入你的邮箱"  clearable/>
               <div style="display: flex; align-items: center;">
                 <el-input v-if="email === 'T' && login_or_register === 'register'" v-model="email_code" style="margin-bottom: 10px;" placeholder="请输入邮箱验证码"  clearable/>
-                <el-button v-if="email === 'T' && login_or_register === 'register'" style="margin-left: 10px;">发送验证码</el-button>
+                <el-button v-if="email === 'T' && login_or_register === 'register'" style="margin-left: 10px;" @click="send_code()">发送验证码</el-button>
               </div>
 
               <el-button v-if="login_or_register === 'login'" type="success"> 登录 </el-button>
