@@ -181,12 +181,6 @@ socket.onmessage = function(message){
   }
   //注册成功
   else if(data.mode === 'register_success'){
-    ElNotification({
-      title: '注册成功！',
-      message: data.message,
-      type:'success',
-      position: 'bottom-right',
-    })
     //操作cookie
     // 删除之前的cookies
     if($cookies.isKey("user") ){$cookies.remove("user")}
@@ -199,6 +193,38 @@ socket.onmessage = function(message){
     //跳转页面
     window.location.href = data.url
   }
+  //密码错误
+  else if(data.mode ==='login_password_wrong'){
+    ElNotification({
+      title: '登录失败！',
+      message: data.message,
+      type:'error',
+      position: 'bottom-right',
+    })
+  }
+  //用户不存在
+  else if(data.mode ==='login_username_wrong'){
+    ElNotification({
+      title: '登录失败！',
+      message: data.message,
+      type:'error',
+      position: 'bottom-right',
+  })
+  }
+  //登录成功
+  else if(data.mode ==='login_success'){
+    //操作cookie
+    // 删除之前的cookies
+    if($cookies.isKey("user") ){$cookies.remove("user")
+    //设置并写入
+    const user = {
+      username: name.value,
+      password: password.value,
+    }
+    $cookies.set("user",user)
+    //跳转页面
+    window.location.href = data.url
+  }}
 }
 
 //发送验证码函数
@@ -207,8 +233,13 @@ function send_code() {
 }
 
 //注册函数
-function  register() {
+function  register_button() {
   socket.send(JSON.stringify({'mode':'register','name':name.value,'password':password.value,'email':email_input.value,'email_code':email_code.value}))
+}
+
+//登录函数
+function login_button() {
+  socket.send(JSON.stringify({'mode':'login','name':name.value,'password':password.value}))
 }
 </script>
 
@@ -218,7 +249,7 @@ function  register() {
     <!-- 骨架屏内容 -->
     <template #template>
       <div style="text-align: -webkit-center">
-        <el-skeleton-item variant="rect" style="width: 30%;margin-top: 8%;" id="load"/>
+        <el-skeleton-item variant="rect" style="width: 30%;margin-top: 8%" id="load"/>
       </div>
     </template>
     <!-- 正文 -->
@@ -242,8 +273,8 @@ function  register() {
                 <el-button v-if="email === 'T' && login_or_register === 'register'" style="margin-left: 10px;" @click="send_code()">发送验证码</el-button>
               </div>
 
-              <el-button v-if="login_or_register === 'login'" type="success"> 登录 </el-button>
-              <el-button v-if="login_or_register === 'register'" type="warning" @click="register()"> 注册 </el-button>
+              <el-button v-if="login_or_register === 'login'" type="success" @click="login_button()">  登录  </el-button>
+              <el-button v-if="login_or_register === 'register'" type="warning" @click="register_button()">  注册  </el-button>
             </el-col>
           </div>
         </div>
