@@ -124,11 +124,91 @@ socket.onmessage = function(message){
           })
       }
   }
+  //注册账号回调
+  //用户名超长
+  else if(data.mode === 'register_name_too_long'){
+    ElNotification({
+      title: '注册失败！',
+      message: data.message,
+      type:'error',
+      position: 'bottom-right',
+    })
+  }
+  //密码超长
+  else if(data.mode === 'register_password_too_long'){
+    ElNotification({
+      title: '注册失败！',
+      message: data.message,
+      type:'error',
+      position: 'bottom-right',
+    })
+  }
+  //邮箱长度超长
+  else if(data.mode === 'register_email_too_long'){
+    ElNotification({
+      title: '注册失败！',
+      message: data.message,
+      type:'error',
+      position: 'bottom-right',
+    })
+  }
+  //验证码不正确
+  else if(data.mode === 'register_email_code_wrong'){
+    ElNotification({
+      title: '注册失败！',
+      message: data.message,
+      type:'error',
+      position: 'bottom-right',
+    })
+  }
+  //用户名重复
+  else if(data.mode === 'register_username_repeat'){
+    ElNotification({
+      title: '注册失败！',
+      message: data.message,
+      type:'error',
+      position: 'bottom-right',
+    })
+  }
+  //注册失败
+  else if(data.mode === 'register_failure'){
+    ElNotification({
+      title: '注册失败！',
+      message: data.message,
+      type:'error',
+      position: 'bottom-right',
+    })
+  }
+  //注册成功
+  else if(data.mode === 'register_success'){
+    ElNotification({
+      title: '注册成功！',
+      message: data.message,
+      type:'success',
+      position: 'bottom-right',
+    })
+    //操作cookie
+    // 删除之前的cookies
+    if($cookies.isKey("user") ){$cookies.remove("user")}
+    //设置并写入
+    const user = {
+      username: name.value,
+      password: password.value,
+    }
+    $cookies.set("user",user)
+    //跳转页面
+    window.location.href = data.url
+  }
 }
 
 //发送验证码函数
 function send_code() {
   socket.send(JSON.stringify({'mode':'send_code','email':email_input.value}))
+}
+
+//注册函数
+function  register() {
+  socket.send(JSON.stringify({'mode':'register','name':name.value,'password':password.value,'email':email_input.value,'email_code':email_code.value}))
 }
 </script>
 
@@ -152,7 +232,8 @@ function send_code() {
           </el-button-group><br><br>
           <div style="width:70%">
             <el-col :span='100'>
-              <el-input v-model="name" style="margin-bottom: 10px;" placeholder="请输入你的用户名或邮箱" clearable />
+              <el-input v-if='login_or_register === "login"' v-model="name" style="margin-bottom: 10px;" placeholder="请输入你的用户名或邮箱" clearable />
+              <el-input v-if="login_or_register === 'register'" v-model="name" style="margin-bottom: 10px;" placeholder="请输入你的用户名" clearable />
               <el-input v-model="password" style="margin-bottom: 10px;" placeholder="请输入你的密码" show-password/>
 
               <el-input v-if="email === 'T' && login_or_register === 'register'" v-model="email_input" style="margin-bottom: 10px;" placeholder="请输入你的邮箱"  clearable/>
@@ -162,7 +243,7 @@ function send_code() {
               </div>
 
               <el-button v-if="login_or_register === 'login'" type="success"> 登录 </el-button>
-              <el-button v-if="login_or_register === 'register'" type="warning"> 注册 </el-button>
+              <el-button v-if="login_or_register === 'register'" type="warning" @click="register()"> 注册 </el-button>
             </el-col>
           </div>
         </div>
