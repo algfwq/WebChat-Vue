@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted,reactive } from 'vue'
 import { ElNotification } from 'element-plus'
+import Cookies from 'js-cookie';
 
 //设置深色模式
 import { useDark, useToggle } from '@vueuse/core'
@@ -58,13 +59,13 @@ let email_input = ref('')
 let email_code = ref('')
 
 // 获取当前页面的主机名和端口号
-const hostname = window.location.hostname;
-const port = 8000;
-// 构建WebSocket的URL
-const url = ref(`ws://${hostname}:${port}/login_ws/`)
+const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const host = window.location.host;
+const url = `${protocol}//${host}/login_ws/`;
+console.log(url)
 
 //创建websocket连接后端
-var socket = new WebSocket(url.value)
+var socket = new WebSocket(url)
 console.log("websocket连接成功！")
 
 //定义断开websocket连接之后的回调函数
@@ -182,14 +183,15 @@ socket.onmessage = function(message){
   //注册成功
   else if(data.mode === 'register_success'){
     //操作cookie
-    // 删除之前的cookies
-    if($cookies.isKey("user") ){$cookies.remove("user")}
-    //设置并写入
     const user = {
       username: name.value,
       password: password.value,
     }
-    $cookies.set("user",user)
+    // 设置cookie
+    Cookies.set('user',JSON.stringify(user))
+    // 获取cookie
+    const value = Cookies.get('user');
+    console.log(value)
     //跳转页面
     window.location.href = data.url
   }
@@ -214,17 +216,18 @@ socket.onmessage = function(message){
   //登录成功
   else if(data.mode ==='login_success'){
     //操作cookie
-    // 删除之前的cookies
-    if($cookies.isKey("user") ){$cookies.remove("user")
-    //设置并写入
     const user = {
       username: name.value,
       password: password.value,
     }
-    $cookies.set("user",user)
+    // 设置cookie
+    Cookies.set('user',JSON.stringify(user))
+    // 获取cookie
+    const value = Cookies.get('user');
+    console.log(value)
     //跳转页面
-    window.location.href = data.url
-  }}
+    window.location.href = data.url;
+  }
 }
 
 //发送验证码函数
