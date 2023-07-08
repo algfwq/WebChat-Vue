@@ -62,7 +62,6 @@ let email_code = ref('')
 const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 const host = window.location.host;
 const url = `${protocol}//${host}/login_ws/`;
-console.log(url)
 
 //创建websocket连接后端
 var socket = new WebSocket(url)
@@ -266,7 +265,7 @@ function login_button() {
           </el-button-group><br><br>
           <div style="width:70%">
             <el-col :span='100'>
-              <el-input v-if='login_or_register === "login"' v-model="name" style="margin-bottom: 10px;" placeholder="请输入你的用户名或邮箱" clearable />
+              <el-input v-if='login_or_register === "login"' v-model="name" style="margin-bottom: 10px;" placeholder="请输入你的用户名" clearable />
               <el-input v-if="login_or_register === 'register'" v-model="name" style="margin-bottom: 10px;" placeholder="请输入你的用户名" clearable />
               <el-input v-model="password" style="margin-bottom: 10px;" placeholder="请输入你的密码" show-password/>
 
